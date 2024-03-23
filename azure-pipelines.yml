@@ -24,3 +24,32 @@ stages:
         PathtoPublish: '$(Build.SourcesDirectory)/build'
         ArtifactName: 'todoAvi'
         publishLocation: 'Container'
+
+- stage: Todo_Deployment_Stage
+  displayName: Todo_Deployment_Stage
+  jobs:
+  - job: Todo_Deployment_Stage
+    displayName: Todo_Deployment_Stage
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'todoAvi'
+        targetPath: '$Build.ArtifactStagingDirectory'
+    - task: CopyFilesOverSSH@0
+      inputs:
+        sshEndpoint: 'sshconnectionTodoAppVM24Mar2024'
+        sourceFolder: '$Build.ArtifactStagingDirectory'
+        contents: '**'
+        targetFolder: '/tmp/AviTodoBuildArtifact'
+        readyTimeout: '20000'
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'sshconnectionTodoAppVM24Mar2024'
+        runOptions: 'commands'
+        commands: |
+          sudo apt update
+          sudo apt install nginx -y
+          sudo cp -r /tmp/AviTodoBuildArtifact/* /var/www/html
+          sudo systemctl restart nginx
+        readyTimeout: '20000'
