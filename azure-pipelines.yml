@@ -48,8 +48,8 @@ stages:
         sshEndpoint: 'sshconnectionTodoAppVM24Mar2024'
         runOptions: 'commands'
         commands: |
-          sudo apt update
-          sudo apt install nginx -y
+          sudo apt-get update
+          sudo apt-get install nginx -y
           sudo cp -r /tmp/AviTodoBuildArtifact/* /var/www/html
           sudo systemctl restart nginx
         readyTimeout: '20000'
