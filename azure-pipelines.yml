@@ -17,8 +17,8 @@ stages:
     - task: CmdLine@2
       inputs:
         script: |
-          sudo run npm install
-          sudo npm run build
+          run npm install
+          npm run build
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.SourcesDirectory)/build'
